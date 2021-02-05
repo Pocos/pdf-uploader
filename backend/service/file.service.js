@@ -52,7 +52,6 @@ const buildQueryFromFilters = ({ filters }) => {
  * @param {*} param0
  */
 const listFiles = async (query) => {
-  console.log(query);
   // Separate data used for filtering purposes from data used for pagination and sorting ones
   const {
     pageNumber, pageSize = config.PAGE_SIZE, sortKey, sortDirection, ...filters
@@ -122,5 +121,27 @@ const createFile = async ({ file }) => {
   }
 };
 
+/**
+ * Delete file by id
+ * @param {{body: any}} param0
+ * @returns {Promise<{
+  *  data: any
+  * }}>
+  */
+const deleteFile = async (id) => {
+  try {
+    const File = getModel(collectionName.FILE);
+    const data = await File.findByIdAndDelete(id);
+
+    // Clean disk
+    fs.unlinkSync(data.filePath);
+    fs.unlinkSync(data.thumbnailPath);
+  } catch (e) {
+    log.error(e.message);
+    throw new GenericError('Unable to delete file', ERROR_CONFIG.GENERIC_ERROR, true);
+  }
+};
+
 exports.listFiles = listFiles;
 exports.createFile = createFile;
+exports.deleteFile = deleteFile;

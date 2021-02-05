@@ -33,4 +33,19 @@ export class FileService {
       // .map(() => { return true; })
       //.catch((e) => console.log(e));
   }
+
+  public editFile(fileToUpload: File) {
+    const formData: FormData = new FormData();
+    formData.append('file', fileToUpload, fileToUpload.name);
+    return this.http
+      .post('http://localhost:3000/api/v1/file', formData, {})
+      // .map(() => { return true; })
+      //.catch((e) => console.log(e));
+  }
+
+  public deleteFile(id: string) {
+    console.log(id);
+    return this.http
+      .delete(`http://localhost:3000/api/v1/file/${id}`, {});
+  }
 }

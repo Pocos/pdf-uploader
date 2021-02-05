@@ -21,7 +21,7 @@ export class HomeComponent implements OnInit {
 
   fileToUpload: File = null;
 
-  src: string = "https://vadimdez.github.io/ng2-pdf-viewer/assets/pdf-test.pdf";
+  src: string;
   constructor(private fileService: FileService, private modalService: NgbModal) { }
 
   ngOnInit() {
@@ -31,12 +31,8 @@ export class HomeComponent implements OnInit {
 
   open(filePath, content) {
     this.src = 'http://localhost:3000/api/v1/file'+ filePath;
-    console.log(filePath);
     this.modalService.open(content, {ariaLabelledBy: 'modal-basic-title'}).result.then((result) => {
-      
-      // this.closeResult = `Closed with: ${result}`;
     }, (reason) => {
-      // this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
     });
   }
 
@@ -51,13 +47,7 @@ export class HomeComponent implements OnInit {
       .subscribe();
   }
 
-  onSelect(event) {
-    console.log(event);
-    // this.files.push(...event.addedFiles);
-  }
-
   loadFilePage() {
-    console.log(this.dataSource);
     this.dataSource.loadFiles(
       this.sort.active,
       this.sort.direction,
@@ -83,5 +73,21 @@ export class HomeComponent implements OnInit {
         this.loadFilePage();
       })
     }
+  }
+
+  editFile(id){
+    this.fileService.editFile(id).subscribe(data => {
+        // reset the paginator after sorting
+        this.sort.sortChange.subscribe(() => this.paginator.pageIndex = 0);
+        this.loadFilePage();
+      })
+  }
+
+  deleteFile(id: string){
+    this.fileService.deleteFile(id).subscribe(data => {
+        // reset the paginator after sorting
+        this.sort.sortChange.subscribe(() => this.paginator.pageIndex = 0);
+        this.loadFilePage();
+      })
   }
 }

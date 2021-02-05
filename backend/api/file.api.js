@@ -12,7 +12,27 @@ const init = (app) => {
   app.use('/file', fileRouter);
   // fileRouter.use(middleware.checkAuthAndExtractRole);
 
-
+  /**
+   * @swagger
+   *
+   *   /api/v1/file/data/{id}:
+   *       get:
+   *           tags:
+   *           - "file"
+   *           summary: Get file data, thumbnail or pdf
+   *           security:
+   *            - BearerAuth: []
+   *           operationId: getAllFiles
+   *           parameters:
+   *            - in: path
+   *              name: id
+   *              required: true
+   *              schema:
+   *                type: string
+   *           responses:
+   *             200:
+   *               description: Returns file
+   */
   fileRouter.get('/data/:id', async (req, res, next) => {
     try {
       res.sendFile(`/data/${req.params.id}`);
@@ -91,6 +111,36 @@ const init = (app) => {
       next(e);
     } finally {
       next();
+    }
+  });
+
+  /**
+   * @swagger
+   *
+   *   /api/v1/file/{id}:
+   *       delete:
+   *           tags:
+   *           - "file"
+   *           summary: Delete file info by id
+   *           security:
+   *            - BearerAuth: []
+   *           operationId: getAllFiles
+   *           parameters:
+   *            - in: path
+   *              name: id
+   *              required: true
+   *              schema:
+   *                type: string
+   *           responses:
+   *             204:
+   *               description: Returns all files
+   */
+  fileRouter.delete('/:id', async (req, res, next) => {
+    try {
+      await fileService.deleteFile(req.params.id);
+      res.status(204).end();
+    } catch (e) {
+      next(e);
     }
   });
 };

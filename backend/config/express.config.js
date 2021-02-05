@@ -53,7 +53,7 @@ const setupExpress = () => {
   new OpenApiValidator({
     apiSpec: swaggerSpecs, // api spec JSON object
     // ... other options
-    validateRequests: false,
+    validateRequests: true,
     validateResponses: true,
     validateSecurity: false,
   }).install(app).then(() => {

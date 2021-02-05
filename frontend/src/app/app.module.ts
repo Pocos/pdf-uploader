@@ -19,6 +19,8 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { PdfViewerModule } from 'ng2-pdf-viewer';
 import { FormsModule } from '@angular/forms';
 // import { LoginComponent } from './basic/component/login/login.component';
+import { FontAwesomeModule, FaIconLibrary } from '@fortawesome/angular-fontawesome';
+import { faSquare, faCheckSquare, faTrash, faEdit } from '@fortawesome/free-solid-svg-icons';
 
 @NgModule({
   declarations: [
@@ -39,11 +41,17 @@ import { FormsModule } from '@angular/forms';
     FormsModule,
     MatSortModule,
     BrowserAnimationsModule,
-    NgbModule, PdfViewerModule
+    NgbModule, 
+    PdfViewerModule,
+    FontAwesomeModule
   ],
   providers: [
     {provide: AppPreloadingStrategy, useClass: AppPreloadingStrategy}
   ],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule { 
+  constructor(private library: FaIconLibrary) {
+    library.addIcons(faSquare, faCheckSquare, faTrash, faEdit);
+  }
+}
