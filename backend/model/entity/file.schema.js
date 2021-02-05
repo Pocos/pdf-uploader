@@ -3,8 +3,11 @@ const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
 const schema = new Schema({
-  name: String,
-  age: Number,
+  userId: mongoose.Types.ObjectId,
+  filename: String,
+  mimetype: String,
+  filePath: String,
+  thumbnailPath: String,
   active: { type: Boolean, required: true, default: true },
 });
 
