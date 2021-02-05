@@ -2,7 +2,7 @@
     To add a new pdf file drag it on the table below, or use this manual button
     <label class="file-upload info">
         <input type="file" name="fileToUpload" id="fileToUpload" (change)="handleFileInput($event.target.files)" accept=".pdf">
-       Upload pdf
+       Upload Pdf
       </label>
       
 
@@ -41,6 +41,12 @@
             <mat-header-cell *matHeaderCellDef mat-sort-header>Modified At</mat-header-cell>
             <mat-cell class="duration-cell"
                     *matCellDef="let file">{{file.modified_at}}</mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="thumbnail">
+            <mat-header-cell *matHeaderCellDef>Preview</mat-header-cell>
+            <mat-cell class="duration-cell"
+                    *matCellDef="let file"><img src="http://localhost:3000/api/v1/file/{{file.thumbnailPath}}"/></mat-cell>
         </ng-container>
 
         <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>

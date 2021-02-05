@@ -52,6 +52,7 @@ const buildQueryFromFilters = ({ filters }) => {
  * @param {*} param0
  */
 const listFiles = async (query) => {
+  console.log(query);
   // Separate data used for filtering purposes from data used for pagination and sorting ones
   const {
     pageNumber, pageSize = config.PAGE_SIZE, sortKey, sortDirection, ...filters
@@ -66,7 +67,7 @@ const listFiles = async (query) => {
         results: [
           buildSortKeyFromFilters(sortKey, sortDirection),
           { $skip: (pageNumber - config.STARTING_PAGE_NUM) * pageSize },
-          { $limit: pageSize },
+          { $limit: +pageSize },
 
         ],
         // Second facet: Used to retrieve totalResults basing on prepended matches

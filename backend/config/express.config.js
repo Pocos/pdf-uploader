@@ -1,4 +1,5 @@
 const express = require('express');
+const path = require('path');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const cors = require('cors');
@@ -39,6 +40,8 @@ const setupExpress = () => {
   // Enable Cross Origin Resource Sharing to all origins by default
   app.use(cors());
 
+  const dir = path.join(__dirname, 'public');
+
   app.use(bodyParser.json({ limit: '50mb' }));
   app.use(bodyParser.urlencoded({ limit: '50mb', extended: false }));
   app.use(cookieParser());
@@ -50,7 +53,7 @@ const setupExpress = () => {
   new OpenApiValidator({
     apiSpec: swaggerSpecs, // api spec JSON object
     // ... other options
-    validateRequests: true,
+    validateRequests: false,
     validateResponses: true,
     validateSecurity: false,
   }).install(app).then(() => {

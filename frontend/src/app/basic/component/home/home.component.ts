@@ -14,7 +14,7 @@ import { tap } from 'rxjs/operators';
 })
 export class HomeComponent implements OnInit {
   dataSource: FileDataSource;
-  displayedColumns = ["filename", "fileSize", "filePath", "created_at", "modified_at"];
+  displayedColumns = ["filename", "fileSize", "filePath", "created_at", "modified_at", "thumbnail"];
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
 
@@ -39,9 +39,9 @@ export class HomeComponent implements OnInit {
   }
 
   onSelect(event) {
-		console.log(event);
-		// this.files.push(...event.addedFiles);
-	}
+    console.log(event);
+    // this.files.push(...event.addedFiles);
+  }
 
   loadFilePage() {
     console.log(this.dataSource);
@@ -56,15 +56,19 @@ export class HomeComponent implements OnInit {
   handleFileInput(files: FileList) {
     this.fileToUpload = files.item(0);
     this.fileService.upload(this.fileToUpload).subscribe(data => {
-     this.loadFilePage();
+      // reset the paginator after sorting
+      this.sort.sortChange.subscribe(() => this.paginator.pageIndex = 0);
+      this.loadFilePage();
     })
   }
 
   uploadFile(event) {
-    if(event[0].type === 'application/pdf'){
+    if (event[0].type === 'application/pdf') {
       this.fileService.upload(event[0]).subscribe(data => {
+        // reset the paginator after sorting
+        this.sort.sortChange.subscribe(() => this.paginator.pageIndex = 0);
         this.loadFilePage();
-       })
+      })
     }
   }
 }

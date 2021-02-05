@@ -12,6 +12,15 @@ const init = (app) => {
   app.use('/file', fileRouter);
   // fileRouter.use(middleware.checkAuthAndExtractRole);
 
+
+  fileRouter.get('/data/:id', async (req, res, next) => {
+    try {
+      res.sendFile(`/data/${req.params.id}`);
+    } catch (e) {
+      next(e);
+    }
+  });
+
   /**
    * @swagger
    *
