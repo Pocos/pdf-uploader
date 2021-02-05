@@ -13,6 +13,7 @@ import { MatInputModule } from '@angular/material/input';
 import {MatSortModule} from '@angular/material/sort';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 
+import { DragDropDirective } from './drag-drop.directive';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 // import { LoginComponent } from './basic/component/login/login.component';
 
@@ -20,6 +21,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
   declarations: [
     AppComponent,
     HomeComponent,
+    DragDropDirective,
     // LoginComponent,
   ],
   imports: [

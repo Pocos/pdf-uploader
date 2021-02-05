@@ -17,27 +17,6 @@ export class AppComponent implements OnInit {
 
   constructor(private http: HttpClient) {}
 
-  // Angular 2 Life Cycle event when component has been initialized
   ngOnInit() {
-    // this.getAllPeople();
   }
-
-
-  /*
-  // Add one person to the API
-  addPerson(name, age) {
-    this.http.post(`${this.API}/users`, {name, age})
-      .subscribe(() => {
-        this.getAllPeople();
-      })
-  }
-
-  // Get all users from the API
-  getAllPeople() {
-    this.http.get(`${this.API}/user`)
-      .subscribe((res: any) => {
-        console.log(res.data)
-        this.people = res.data;
-      })
-  }*/
 }

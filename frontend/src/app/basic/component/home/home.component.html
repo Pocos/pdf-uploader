@@ -1,9 +1,10 @@
 <div>
-
+    To add a new pdf file drag it on the table below, or use this manual button
     <label class="file-upload info">
         <input type="file" name="fileToUpload" id="fileToUpload" (change)="handleFileInput($event.target.files)" accept=".pdf">
-        Upload new PDF
+       Upload pdf
       </label>
+      
 
       
     <!--<div class="spinner-container" *ngIf="dataSource.loading$ | async">
@@ -11,7 +12,7 @@
     </div>-->
 
     <mat-table class="lessons-table mat-elevation-z8" [dataSource]="dataSource"
-           matSort matSortActive="created_at" matSortDirection="desc" matSortDisableClear>
+           matSort matSortActive="created_at" matSortDirection="desc" matSortDisableClear appDragDrop (onFileDropped)="uploadFile($event)">
 
         <ng-container matColumnDef="filename">
             <mat-header-cell *matHeaderCellDef mat-sort-header>Filename</mat-header-cell>

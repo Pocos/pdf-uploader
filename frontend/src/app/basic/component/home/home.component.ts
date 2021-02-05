@@ -38,6 +38,11 @@ export class HomeComponent implements OnInit {
       .subscribe();
   }
 
+  onSelect(event) {
+		console.log(event);
+		// this.files.push(...event.addedFiles);
+	}
+
   loadFilePage() {
     console.log(this.dataSource);
     this.dataSource.loadFiles(
@@ -53,5 +58,13 @@ export class HomeComponent implements OnInit {
     this.fileService.upload(this.fileToUpload).subscribe(data => {
      this.loadFilePage();
     })
+  }
+
+  uploadFile(event) {
+    if(event[0].type === 'application/pdf'){
+      this.fileService.upload(event[0]).subscribe(data => {
+        this.loadFilePage();
+       })
+    }
   }
 }
