@@ -1,23 +1,28 @@
- # Create image based on the official Node 6 image from the dockerhub
-FROM node:6
+FROM node:14.5-alpine as builder
 
-# Create a directory where our app will be placed
-RUN mkdir -p /usr/src/app
+## Install build toolchain, install node deps and compile native add-ons
+#RUN apk add --no-cache --virtual .gyp python make g++
+#RUN npm install [ your npm dependencies here ]
+COPY package*.json /
 
-# Change directory so that our commands run inside this new directory
-WORKDIR /usr/src/app
+RUN npm ci --production
 
-# Copy dependency definitions
-COPY package.json /usr/src/app
+FROM node:14.5-alpine as app
 
-# Install dependecies
-RUN npm install
+## Copy built node modules and binaries without including the toolchain
+COPY --from=builder node_modules /app/node_modules
 
-# Get all the code needed to run the app
-COPY . /usr/src/app
+# Remove for production build
+RUN npm install -g nodemon
 
-# Expose the port the app runs in
-EXPOSE 3000
+COPY . /app
 
-# Serve the app
-CMD ["npm", "start"]
+WORKDIR /app
+
+USER node
+
+#ENV TEMP_FILE_PATH
+
+#HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 CMD curl --fail http://localhost:3000/ || exit 1
+
+CMD ["nodemon","server.js"]

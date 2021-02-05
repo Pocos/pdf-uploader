@@ -22,8 +22,8 @@ const User = mongoose.model('User', userSchema);
 
 /_ GET api listing. _/
 router.get('/', (req, res) => {
-        console.log("aaa");
-        fs.writeFileSync('data/3.txt',"This is a test");
+        console.log("aaaz");
+        fs.writeFileSync('/data/3.txt',"This is a test");
 
         res.send('api works');
 });
