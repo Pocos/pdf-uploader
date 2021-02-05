@@ -66,15 +66,9 @@
         <ng-container matColumnDef="actions">
             <mat-header-cell *matHeaderCellDef>Actions</mat-header-cell>
             <mat-cell class="duration-cell" *matCellDef="let file">
-                <div>
-                    <button type="button" class="btn btn-primary" (click)="editFile(file._id)">
-                        <fa-icon [icon]="['fas', 'edit']"></fa-icon>
-                    </button>
                     <button type="button" class="btn btn-danger" (click)="deleteFile(file._id)">
                         <fa-icon [icon]="['fas', 'trash']"></fa-icon>
                     </button>
-
-                </div>
             </mat-cell>
         </ng-container>
 
