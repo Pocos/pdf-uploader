@@ -1,10 +1,17 @@
-<div class="course">
-    <div class="spinner-container" *ngIf="dataSource.loading$ | async">
+<div>
+
+    <label class="file-upload info">
+        <input type="file" name="fileToUpload" id="fileToUpload" (change)="handleFileInput($event.target.files)" accept=".pdf">
+        Upload new PDF
+      </label>
+
+      
+    <!--<div class="spinner-container" *ngIf="dataSource.loading$ | async">
         <mat-spinner></mat-spinner>
-    </div>
+    </div>-->
 
     <mat-table class="lessons-table mat-elevation-z8" [dataSource]="dataSource"
-           matSort matSortActive="filename" matSortDirection="asc" matSortDisableClear>
+           matSort matSortActive="created_at" matSortDirection="desc" matSortDisableClear>
 
         <ng-container matColumnDef="filename">
             <mat-header-cell *matHeaderCellDef mat-sort-header>Filename</mat-header-cell>
@@ -40,6 +47,6 @@
         <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
 
     </mat-table>
-    <mat-paginator [length]="dataSource.size$ | async" [pageSize]="3"
+    <mat-paginator [length]="dataSource.size$ | async" [pageSize]="5"
                    [pageSizeOptions]="[3, 5, 10]"></mat-paginator>
 </div>

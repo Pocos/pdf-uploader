@@ -1,9 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { MatTableDataSource } from '@angular/material/table';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpEvent, HttpParams, HttpRequest } from '@angular/common/http';
 import { merge, Observable } from 'rxjs';
 import { FileService } from '../../service/file.service';
-import { PdfFile } from '../../../model/pdf-file.model';
 import { MatSort } from '@angular/material/sort';
 import { MatPaginator } from '@angular/material/paginator';
 import { FileDataSource } from '../../service/file.datasource';
@@ -20,11 +18,13 @@ export class HomeComponent implements OnInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
 
-  constructor(private fileService: FileService) { }
+  fileToUpload: File = null;
+
+  constructor(private fileService: FileService, private http: HttpClient) { }
 
   ngOnInit() {
     this.dataSource = new FileDataSource(this.fileService);
-    this.dataSource.loadFiles('filename','asc',0,3);
+    this.dataSource.loadFiles('created_at', 'desc', 0, 5);
   }
 
   ngAfterViewInit() {
@@ -32,18 +32,26 @@ export class HomeComponent implements OnInit {
     this.sort.sortChange.subscribe(() => this.paginator.pageIndex = 0);
 
     merge(this.sort.sortChange, this.paginator.page)
-            .pipe(
-                tap(() => this.loadFilePage())
-            )
-            .subscribe();
-}
+      .pipe(
+        tap(() => this.loadFilePage())
+      )
+      .subscribe();
+  }
 
-loadFilePage() {
-  console.log(this.dataSource);
+  loadFilePage() {
+    console.log(this.dataSource);
     this.dataSource.loadFiles(
-        this.sort.active,
-        this.sort.direction,
-        this.paginator.pageIndex,
-        this.paginator.pageSize);
-}
+      this.sort.active,
+      this.sort.direction,
+      this.paginator.pageIndex,
+      this.paginator.pageSize);
+  }
+
+  // file from event.target.files[0]
+  handleFileInput(files: FileList) {
+    this.fileToUpload = files.item(0);
+    this.fileService.upload(this.fileToUpload).subscribe(data => {
+     this.loadFilePage();
+    })
+  }
 }
