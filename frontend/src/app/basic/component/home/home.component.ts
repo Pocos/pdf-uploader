@@ -6,6 +6,7 @@ import { MatSort } from '@angular/material/sort';
 import { MatPaginator } from '@angular/material/paginator';
 import { FileDataSource } from '../../service/file.datasource';
 import { tap } from 'rxjs/operators';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'home',
@@ -14,17 +15,29 @@ import { tap } from 'rxjs/operators';
 })
 export class HomeComponent implements OnInit {
   dataSource: FileDataSource;
-  displayedColumns = ["filename", "fileSize", "filePath", "created_at", "modified_at", "thumbnail"];
+  displayedColumns = ["filename", "fileSize", "created_at", "modified_at", "thumbnail", "download", "actions"];
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
 
   fileToUpload: File = null;
 
-  constructor(private fileService: FileService, private http: HttpClient) { }
+  src: string = "https://vadimdez.github.io/ng2-pdf-viewer/assets/pdf-test.pdf";
+  constructor(private fileService: FileService, private modalService: NgbModal) { }
 
   ngOnInit() {
     this.dataSource = new FileDataSource(this.fileService);
     this.dataSource.loadFiles('created_at', 'desc', 0, 5);
+  }
+
+  open(filePath, content) {
+    this.src = 'http://localhost:3000/api/v1/file'+ filePath;
+    console.log(filePath);
+    this.modalService.open(content, {ariaLabelledBy: 'modal-basic-title'}).result.then((result) => {
+      
+      // this.closeResult = `Closed with: ${result}`;
+    }, (reason) => {
+      // this.closeResult = `Dismissed ${this.getDismissReason(reason)}`;
+    });
   }
 
   ngAfterViewInit() {

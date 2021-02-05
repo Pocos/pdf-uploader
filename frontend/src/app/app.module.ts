@@ -15,6 +15,9 @@ import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 
 import { DragDropDirective } from './drag-drop.directive';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { PdfViewerModule } from 'ng2-pdf-viewer';
+import { FormsModule } from '@angular/forms';
 // import { LoginComponent } from './basic/component/login/login.component';
 
 @NgModule({
@@ -33,8 +36,10 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     MatTableModule,
     MatProgressSpinnerModule,
     MatPaginatorModule,
+    FormsModule,
     MatSortModule,
     BrowserAnimationsModule,
+    NgbModule, PdfViewerModule
   ],
   providers: [
     {provide: AppPreloadingStrategy, useClass: AppPreloadingStrategy}

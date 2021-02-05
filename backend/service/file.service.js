@@ -97,7 +97,8 @@ const listFiles = async (query) => {
 const createFile = async ({ file }) => {
   try {
     const fileId = uuid.v4();
-    fs.writeFileSync(`/data/${fileId}`, file.buffer);
+    const newFilePath = `/data/${fileId}`;
+    fs.writeFileSync(newFilePath, file.buffer);
 
     const File = getModel(collectionName.FILE);
 
@@ -105,14 +106,13 @@ const createFile = async ({ file }) => {
 
     if (file.mimetype === 'application/pdf') {
       thumbnailPath = `/data/${fileId}_thumbnail.png`;
-      thumbnailLib.generateThumbnailForPdfByPath(`/data/${fileId}`);
+      thumbnailLib.generateThumbnailForPdfByPath(newFilePath);
     }
-    console.log(file);
 
     await File.create({
       filename: file.originalname,
       mimetype: file.mimetype,
-      filePath: `/data/${fileId}`,
+      filePath: newFilePath,
       fileSize: file.size,
       thumbnailPath,
     });
