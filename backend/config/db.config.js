@@ -23,7 +23,7 @@ const GenericError = require('../model/error/generic.error');
 let dbConnection = null;
 
 // MongoDB URL from the docker-compose file
-const dbHost = 'mongodb://database/aruba';
+const dbHost = 'mongodb://database/content';
 
 /**
  * Get a previously saved connection based on tenant. Create it and attach listeners if not.
