@@ -2,24 +2,18 @@
  * @swagger
  * components:
  *  schemas:
- *    UserInfoResponse:
- *      type: object
  *
- *    CreateUserRequest:
+ *    LoginRequest:
  *      type: object
  *      additionalProperties: false
  *      required:
  *        - name
  *        - password
- *        - role
  *      properties:
  *        name:
  *          type: string
  *        password:
  *          type: string
- *        role:
- *          type: string
- *          enum: [ADMIN, USER]
  *
  *    UserDetailResponse:
  *      type: object

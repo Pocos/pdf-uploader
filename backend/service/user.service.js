@@ -1,6 +1,11 @@
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+const config = require('../config');
+
 const log = require('../lib/logger.lib').getLogger('user.service');
 const { getModel } = require('../config/db.config');
 const { collectionName } = require('../model/entity');
+const { UnauthorizedError } = require('../model/error/auth.error');
 const ERROR_CONFIG = require('../model/error/config.error');
 const GenericError = require('../model/error/generic.error');
 
@@ -26,7 +31,7 @@ const listUsers = async () => {
 const createUser = async ({ body }) => {
   try {
     const User = getModel(collectionName.USER);
-
+    body.password = bcrypt.hashSync(body.password, bcrypt.genSaltSync(10));
     const result = await User.create(body);
     return {
       data: result,
@@ -37,5 +42,33 @@ const createUser = async ({ body }) => {
   }
 };
 
+/**
+ * Login user
+ * @param {{body: any}} param0
+ * @returns {Promise<{
+  *  data: any
+  * }}>
+  */
+const loginUser = async ({ body }) => {
+  try {
+    const User = getModel(collectionName.USER);
+    const [user] = await User.find({ name: body.name }).lean();
+    if (!bcrypt.compareSync(body.password, user.password)) {
+      throw new UnauthorizedError();
+    }
+
+    // Don't put password on jwt
+    delete user.password;
+    const token = jwt.sign(user, config.HMAC_KEY, { expiresIn: '2h' });
+    return {
+      token,
+    };
+  } catch (e) {
+    log.error(e.message);
+    throw new GenericError('Unable to login user', ERROR_CONFIG.GENERIC_ERROR, true);
+  }
+};
+
 exports.listUsers = listUsers;
 exports.createUser = createUser;
+exports.loginUser = loginUser;
