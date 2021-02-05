@@ -11,8 +11,8 @@ const config = {
   HMAC_KEY: process.env.HMAC_KEY || '80ad72b8f44d82d583b4559a99b721aab5eda178',
   JWT_TOKEN_VALIDITY: process.env.JWT_TOKEN_VALIDITY || 60 * 60 * 2, // 2 hours lifetime
   JWT_TOKEN_VALIDITY_EXTERNAL: process.env.JWT_TOKEN_VALIDITY || 60 * 60 * 6, // 6 hours lifetime
-  STARTING_PAGE_NUM: process.env.STARTING_PAGE_NUM || 1,
-  PAGE_SIZE: process.env.PAGE_SIZE || 50,
+  STARTING_PAGE_NUM: process.env.STARTING_PAGE_NUM || 0,
+  PAGE_SIZE: process.env.PAGE_SIZE || 3,
   BASE_MONGODB_URI: process.env.MONGODB_URI,
   GOOGLE_APPLICATION_CREDENTIALS: process.env.GOOGLE_APPLICATION_CREDENTIALS,
   CONNECTION_URIS: {},

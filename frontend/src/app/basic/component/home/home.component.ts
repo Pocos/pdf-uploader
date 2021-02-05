@@ -1,50 +1,49 @@
-import { Component, OnInit} from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { MatTableDataSource } from '@angular/material/table';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { merge, Observable } from 'rxjs';
 import { FileService } from '../../service/file.service';
 import { PdfFile } from '../../../model/pdf-file.model';
+import { MatSort } from '@angular/material/sort';
+import { MatPaginator } from '@angular/material/paginator';
+import { FileDataSource } from '../../service/file.datasource';
+import { tap } from 'rxjs/operators';
 
 @Component({
-    selector: 'home',
-    templateUrl: './home.component.html',
-    styleUrls: ['./home.component.css']
+  selector: 'home',
+  templateUrl: './home.component.html',
+  styleUrls: ['./home.component.css']
 })
 export class HomeComponent implements OnInit {
-    title = 'app works!';
+  dataSource: FileDataSource;
+  displayedColumns = ["filename", "fileSize", "filePath", "created_at", "modified_at"];
+  @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild(MatSort) sort: MatSort;
 
-  // Link to our api, pointing to localhost
-  API = 'http://localhost:3000/api/v1';
+  constructor(private fileService: FileService) { }
 
-  // Declare empty list of people
-  people: any[] = [];
-
-  public file$: Observable<PdfFile | {}>;
-  
-  constructor(private http: HttpClient, private fileService: FileService) {}
-
-  // Angular 2 Life Cycle event when component has been initialized
   ngOnInit() {
-    //this.getAllPeople();
-    this.file$ = this.fileService.getFileList();
+    this.dataSource = new FileDataSource(this.fileService);
+    this.dataSource.loadFiles('filename','asc',0,3);
   }
 
+  ngAfterViewInit() {
+    // reset the paginator after sorting
+    this.sort.sortChange.subscribe(() => this.paginator.pageIndex = 0);
 
-  
-  // Add one person to the API
-  addPerson(name, age) {
-    this.http.post(`${this.API}/users`, {name, age})
-      .subscribe(() => {
-        this.getAllPeople();
-      })
-  }
+    merge(this.sort.sortChange, this.paginator.page)
+            .pipe(
+                tap(() => this.loadFilePage())
+            )
+            .subscribe();
+}
 
-  // Get all users from the API
-  getAllPeople() {
-    this.http.get(`${this.API}/user`)
-      .subscribe((res: any) => {
-        console.log(res.data)
-        this.people = res.data;
-      })
-  }
-
+loadFilePage() {
+  console.log(this.dataSource);
+    this.dataSource.loadFiles(
+        this.sort.active,
+        this.sort.direction,
+        this.paginator.pageIndex,
+        this.paginator.pageSize);
+}
 }

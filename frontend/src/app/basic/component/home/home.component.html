@@ -1,45 +1,45 @@
-<div class="container">
-    <h3>Add new person</h3>
-    <form>
-        <div class="form-group">
-            <label for="name">Name</label>
-            <input type="text" class="form-control" id="name" #name>
-        </div>
-        <div class="form-group">
-            <label for="age">Age</label>
-            <input type="number" class="form-control" id="age" #age>
-        </div>
-        <button type="button" (click)="addPerson(name.value, age.value)" class="btn btn-primary">Add person</button>
-    </form>
-
-    <h3>People</h3>
-    <!-- Bootstrap Card -->
-    <div class="card card-block col-md-3" *ngFor="let person of people">
-        <h4 class="card-title">{{person.name}} {{person.age}}</h4>
+<div class="course">
+    <div class="spinner-container" *ngIf="dataSource.loading$ | async">
+        <mat-spinner></mat-spinner>
     </div>
 
-    <ng-container *ngIf="file$ | async as file else loading">
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th>Filename</th>
-                    <th>mimetype</th>
-                    <th>filePath</th>
-                    <th>thumbnailPath</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr *ngFor="let item of file">
-                    <td>{{item.filename}}</td>
-                    <td>{{item.mimetype}}</td>
-                    <td>{{item.filePath}}</td>
-                    <td>{{item.thumbnailPath}}</td>
-                </tr>
-            </tbody>
+    <mat-table class="lessons-table mat-elevation-z8" [dataSource]="dataSource"
+           matSort matSortActive="filename" matSortDirection="asc" matSortDisableClear>
 
-        </table>
-    </ng-container>
-    <ng-template #loading>
-        loading
-    </ng-template>
+        <ng-container matColumnDef="filename">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Filename</mat-header-cell>
+            <mat-cell *matCellDef="let file">{{file.filename}}</mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="fileSize">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>FileSize</mat-header-cell>
+            <mat-cell class="description-cell"
+                    *matCellDef="let file">{{file.fileSize}}</mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="filePath">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>FilePath</mat-header-cell>
+            <mat-cell class="description-cell"
+                    *matCellDef="let file">{{file.filePath}}</mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="created_at">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Created At</mat-header-cell>
+            <mat-cell class="duration-cell"
+                    *matCellDef="let file">{{file.created_at}}</mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="modified_at">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Modified At</mat-header-cell>
+            <mat-cell class="duration-cell"
+                    *matCellDef="let file">{{file.modified_at}}</mat-cell>
+        </ng-container>
+
+        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+
+        <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+
+    </mat-table>
+    <mat-paginator [length]="dataSource.size$ | async" [pageSize]="3"
+                   [pageSizeOptions]="[3, 5, 10]"></mat-paginator>
 </div>

@@ -23,7 +23,11 @@ const init = (app) => {
    *           security:
    *            - BearerAuth: []
    *           operationId: getAllFiles
-   *           parameters: []
+   *           parameters:
+   *            - $ref: '#/components/parameters/CommonPageNumParam'
+   *            - $ref: '#/components/parameters/CommonPageSizeParam'
+   *            - $ref: '#/components/parameters/CommonSortKeyParam'
+   *            - $ref: '#/components/parameters/CommonSortDirectionParam'
    *           responses:
    *             200:
    *               description: Returns all files
@@ -34,7 +38,7 @@ const init = (app) => {
    */
   fileRouter.get('/', async (req, res, next) => {
     try {
-      const serviceData = await fileService.listFiles();
+      const serviceData = await fileService.listFiles(req.query);
       res.json(serviceData);
     } catch (e) {
       next(e);
