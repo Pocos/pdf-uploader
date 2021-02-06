@@ -2,12 +2,12 @@ version: '2' # specify docker-compose version
 
 # Define the services/containers to be run
 services:
-  # frontend: # name of the first service
-  #   build: frontend # specify the directory of the Dockerfile
-  #   ports:
-  #     - "4200:4200" # specify port forewarding
-  #   volumes:
-  #     - ./frontend:/app # this will enable changes made to the angular app reflect in the container
+  frontend: # name of the first service
+    build: frontend # specify the directory of the Dockerfile
+    ports:
+      - "4200:4200" # specify port forewarding
+    volumes:
+      - ./frontend:/app # this will enable changes made to the angular app reflect in the container
 
   backend: #name of the second service
     build: backend # specify the directory of the Dockerfile
