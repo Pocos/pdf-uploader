@@ -1,11 +1,11 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { HttpClient, HttpEvent, HttpParams, HttpRequest } from '@angular/common/http';
-import { merge, Observable } from 'rxjs';
+import { fromEvent, merge, Observable } from 'rxjs';
 import { FileService } from '../../service/file.service';
 import { MatSort } from '@angular/material/sort';
 import { MatPaginator } from '@angular/material/paginator';
 import { FileDataSource } from '../../service/file.datasource';
-import { tap } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, tap } from 'rxjs/operators';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
@@ -18,7 +18,8 @@ export class HomeComponent implements OnInit {
   displayedColumns = ["filename", "fileSize", "created_at", "modified_at", "thumbnail", "download", "actions"];
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
-
+  @ViewChild('input') input: ElementRef;
+  
   fileToUpload: File = null;
 
   src: string;
@@ -37,6 +38,19 @@ export class HomeComponent implements OnInit {
   }
 
   ngAfterViewInit() {
+
+    // server-side search
+    fromEvent(this.input.nativeElement,'keyup')
+    .pipe(
+        debounceTime(150),
+        distinctUntilChanged(),
+        tap(() => {
+            this.paginator.pageIndex = 0;
+            this.loadFilePage();
+        })
+    )
+    .subscribe();
+    
     // reset the paginator after sorting
     this.sort.sortChange.subscribe(() => this.paginator.pageIndex = 0);
 
@@ -52,7 +66,8 @@ export class HomeComponent implements OnInit {
       this.sort.active,
       this.sort.direction,
       this.paginator.pageIndex,
-      this.paginator.pageSize);
+      this.paginator.pageSize,
+      this.input.nativeElement.value);
   }
 
   // file from event.target.files[0]

@@ -11,15 +11,22 @@ export class FileService {
 
   constructor(private http: HttpClient) { }
 
-  public getFileList(sortKey = 'filename', sortDirection = 'asc', pageNumber = 0, pageSize = 3): Observable<PdfFileResponse> {
+  public getFileList(sortKey = 'filename', sortDirection = 'asc', pageNumber = 0, pageSize = 3, filename?: string ): Observable<PdfFileResponse> {
     const url = `http://localhost:3000/api/v1/file`;
-    return this.http.get<PdfFileResponse>(url, {
-      params: new HttpParams()
+    let params = new HttpParams()
         .set('sortKey', sortKey)
         .set('sortDirection', sortDirection)
         .set('pageNumber', pageNumber.toString())
         .set('pageSize', pageSize.toString())
-    })
+    if(filename){
+      params = new HttpParams()
+        .set('sortKey', sortKey)
+        .set('sortDirection', sortDirection)
+        .set('pageNumber', pageNumber.toString())
+        .set('pageSize', pageSize.toString())
+        .set('filename', filename);
+    }
+    return this.http.get<PdfFileResponse>(url, {params})
     /*.pipe(
       map(res =>  res.data)
   );;*/
@@ -30,8 +37,8 @@ export class FileService {
     formData.append('file', fileToUpload, fileToUpload.name);
     return this.http
       .post('http://localhost:3000/api/v1/file', formData, {})
-      // .map(() => { return true; })
-      //.catch((e) => console.log(e));
+    // .map(() => { return true; })
+    //.catch((e) => console.log(e));
   }
 
   public editFile(fileToUpload: File) {
@@ -39,8 +46,8 @@ export class FileService {
     formData.append('file', fileToUpload, fileToUpload.name);
     return this.http
       .post('http://localhost:3000/api/v1/file', formData, {})
-      // .map(() => { return true; })
-      //.catch((e) => console.log(e));
+    // .map(() => { return true; })
+    //.catch((e) => console.log(e));
   }
 
   public deleteFile(id: string) {

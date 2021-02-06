@@ -57,6 +57,11 @@ const init = (app) => {
    *            - $ref: '#/components/parameters/CommonPageSizeParam'
    *            - $ref: '#/components/parameters/CommonSortKeyParam'
    *            - $ref: '#/components/parameters/CommonSortDirectionParam'
+   *            - in: query
+   *              name: filename
+   *              required: false
+   *              schema:
+   *                type: string
    *           responses:
    *             200:
    *               description: Returns all files

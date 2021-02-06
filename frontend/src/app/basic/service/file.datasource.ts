@@ -23,11 +23,11 @@ export class FileDataSource implements DataSource<PdfFile> {
 
     }
 
-    loadFiles(sortKey: string, sortDirection: string, pageNumber: number, pageSize: number) {
+    loadFiles(sortKey: string, sortDirection: string, pageNumber: number, pageSize: number, filename?: string, ) {
 
         this.loadingSubject.next(true);
 
-        this.fileService.getFileList(sortKey, sortDirection, pageNumber, pageSize).pipe(
+        this.fileService.getFileList(sortKey, sortDirection, pageNumber, pageSize, filename).pipe(
             catchError(() => of([])),
             finalize(() => this.loadingSubject.next(false))
         )
