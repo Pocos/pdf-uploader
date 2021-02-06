@@ -50,13 +50,13 @@ const createUser = async ({ body }) => {
   * }}>
   */
 const loginUser = async ({ body }) => {
-  try {
-    const User = getModel(collectionName.USER);
-    const [user] = await User.find({ name: body.name }).lean();
-    if (!bcrypt.compareSync(body.password, user.password)) {
-      throw new UnauthorizedError();
-    }
+  const User = getModel(collectionName.USER);
+  const [user] = await User.find({ name: body.name }).lean();
+  if (!user || !bcrypt.compareSync(body.password, user.password)) {
+    throw new UnauthorizedError();
+  }
 
+  try {
     // Don't put password on jwt
     delete user.password;
     const token = jwt.sign(user, config.HMAC_KEY, { expiresIn: '2h' });

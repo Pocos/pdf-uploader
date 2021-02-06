@@ -1,6 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { HttpClientModule } from '@angular/common/http'; // add http client module
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http'; // add http client module
 
 import { AppComponent } from './app.component';
 import { HomeComponent } from './basic/component/home/home.component';
@@ -17,20 +17,23 @@ import { DragDropDirective } from './drag-drop.directive';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { PdfViewerModule } from 'ng2-pdf-viewer';
-import { FormsModule } from '@angular/forms';
-// import { LoginComponent } from './basic/component/login/login.component';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { LoginComponent } from './basic/component/login/login.component';
 import { FontAwesomeModule, FaIconLibrary } from '@fortawesome/angular-fontawesome';
 import { faSquare, faCheckSquare, faTrash, faEdit } from '@fortawesome/free-solid-svg-icons';
+import { AuthInterceptor } from './interceptor/auth.interceptor';
+import { ErrorInterceptor } from './interceptor/error.interceptor';
 
 @NgModule({
   declarations: [
     AppComponent,
     HomeComponent,
     DragDropDirective,
-    // LoginComponent,
+    LoginComponent,
   ],
   imports: [
     BrowserModule,
+    ReactiveFormsModule,
     AppRoutingModule,
     HttpClientModule,
     MatInputModule,
@@ -46,7 +49,17 @@ import { faSquare, faCheckSquare, faTrash, faEdit } from '@fortawesome/free-soli
     FontAwesomeModule
   ],
   providers: [
-    {provide: AppPreloadingStrategy, useClass: AppPreloadingStrategy}
+    {provide: AppPreloadingStrategy, useClass: AppPreloadingStrategy},
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptor,
+      multi: true
+    },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: ErrorInterceptor,
+      multi: true
+    },
   ],
   bootstrap: [AppComponent]
 })

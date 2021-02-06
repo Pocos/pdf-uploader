@@ -65,9 +65,9 @@ const init = (app) => {
    *                  schema:
    *                    $ref: '#/components/schemas/FileResponse'
    */
-  fileRouter.get('/', async (req, res, next) => {
+  fileRouter.get('/', middleware.checkAuthAndExtractRole, async (req, res, next) => {
     try {
-      const serviceData = await fileService.listFiles(req.query);
+      const serviceData = await fileService.listFiles({ query: req.query, user: req.user });
       res.json(serviceData);
     } catch (e) {
       next(e);
@@ -103,9 +103,9 @@ const init = (app) => {
    *             204:
    *               description: UploadSuccessful
    */
-  fileRouter.post('/', async (req, res, next) => {
+  fileRouter.post('/', middleware.checkAuthAndExtractRole, async (req, res, next) => {
     try {
-      const result = await fileService.createFile({ file: req.files[0] });
+      await fileService.createFile({ file: req.files[0], user: req.user });
       res.status(204).end();
     } catch (e) {
       next(e);
@@ -135,9 +135,9 @@ const init = (app) => {
    *             204:
    *               description: Returns all files
    */
-  fileRouter.delete('/:id', async (req, res, next) => {
+  fileRouter.delete('/:id', middleware.checkAuthAndExtractRole, async (req, res, next) => {
     try {
-      await fileService.deleteFile(req.params.id);
+      await fileService.deleteFile({ id: req.params.id, user: req.user });
       res.status(204).end();
     } catch (e) {
       next(e);

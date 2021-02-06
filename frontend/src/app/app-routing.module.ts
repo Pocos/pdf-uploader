@@ -3,6 +3,10 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { AppPreloadingStrategy } from './app.preloading.strategy';
 import { HomeComponent } from './basic/component/home/home.component';
+import { LoginComponent } from './basic/component/login/login.component';
+import { LogoutComponent } from './basic/component/logout/logout.component';
+import { NoAuthGuardService } from './basic/service/no-auth-guard.service';
+import { RoleGuardService } from './basic/service/role-guard.service';
 // import { LoginComponent } from './basic/component/login/login.component';
 
 
@@ -22,45 +26,14 @@ const routes: Routes = [
   {
     path: 'home',
     component: HomeComponent,
-    // canActivate: [RoleGuardService]
-  },
-  /*{
-    path: 'login',
-    component: LoginComponent,
-    // canActivate: [NoAuthGuardService]
-  },*/
-
-  /*
-  {
-    path: 'user/detail',
-    component: UserDetailComponent,
-    canActivate: [RoleGuardService],
-    resolve: {
-      user: UserDetailResolver
-    }
-  },
-  {
-    path: 'admin',
-    loadChildren: './admin/admin.module#AdminModule',
-    data: { preload: false, delay: false }
-  },
-  {
-    path: 'step',
-    loadChildren: './step/step.module#StepModule',
-    data: { preload: false, delay: false }
-  },
-  {
-    path: 'cs',
-    loadChildren: './cs/cs.module#CsModule',
-    data: { preload: false, delay: false }
-  },
-  { path: 'logout', component: LogoutComponent, canActivate: [RoleGuardService] },
-  {
-    path: 'home',
-    component: HomeComponent,
     canActivate: [RoleGuardService]
   },
-  { path: 'test', component: BlankComponent },*/
+  {
+    path: 'login',
+    component: LoginComponent,
+    canActivate: [NoAuthGuardService]
+  },
+  { path: 'logout', component: LogoutComponent, canActivate: [RoleGuardService] },
   { path: '**', redirectTo: 'home', pathMatch: 'full' } // comment this to disable redirect to homepage for unrecognized routes
 ];
 

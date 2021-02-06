@@ -1,4 +1,5 @@
 const gm = require('gm');
+const mongoose = require('mongoose');
 const fs = require('fs');
 const uuid = require('uuid');
 const log = require('../lib/logger.lib').getLogger('user.service');
@@ -36,8 +37,11 @@ const buildQueryFromFilters = ({ filters }) => {
     if (Array.isArray(filters[p])) {
       // Array search is not regex-like by definition
       acc.push({ [p]: { $in: filters[p] } });
-    } else {
+    } else if (typeof filters[p] === 'string') {
       acc.push({ [p]: { $regex: filters[p], $options: 'i' } });
+    } else {
+      // for object id filter
+      acc.push({ [p]: filters[p] });
     }
     return acc;
   }, mappedFilters);
@@ -51,11 +55,17 @@ const buildQueryFromFilters = ({ filters }) => {
  * List all files
  * @param {*} param0
  */
-const listFiles = async (query) => {
+const listFiles = async ({ query, user }) => {
   // Separate data used for filtering purposes from data used for pagination and sorting ones
   const {
     pageNumber, pageSize = config.PAGE_SIZE, sortKey, sortDirection, ...filters
   } = query;
+
+  // An enum should be used
+  if (user.role === 'USER') {
+    // An user could see only its documents
+    filters.userId = mongoose.Types.ObjectId(user._id);
+  }
 
   const File = getModel(collectionName.FILE);
   const [data] = await File.aggregate([
@@ -93,7 +103,7 @@ const listFiles = async (query) => {
   *  data: any
   * }}>
   */
-const createFile = async ({ file }) => {
+const createFile = async ({ file, user }) => {
   try {
     const fileId = uuid.v4();
     const newFilePath = `/data/${fileId}`;
@@ -110,6 +120,7 @@ const createFile = async ({ file }) => {
 
     await File.create({
       filename: file.originalname,
+      userId: user._id,
       mimetype: file.mimetype,
       filePath: newFilePath,
       fileSize: file.size,
@@ -128,14 +139,17 @@ const createFile = async ({ file }) => {
   *  data: any
   * }}>
   */
-const deleteFile = async (id) => {
+const deleteFile = async ({ id, user }) => {
   try {
     const File = getModel(collectionName.FILE);
-    const data = await File.findByIdAndDelete(id);
-
-    // Clean disk
-    fs.unlinkSync(data.filePath);
-    fs.unlinkSync(data.thumbnailPath);
+    const data = await File.findById(id);
+    // the admin could remove any document
+    if (data && (user.role === 'ADMIN' || (user.role === 'USER' && data.userId.toString() === user._id.toString()))) {
+      await File.findByIdAndRemove(id);
+      // Clean disk
+      fs.unlinkSync(data.filePath);
+      fs.unlinkSync(data.thumbnailPath);
+    }
   } catch (e) {
     log.error(e.message);
     throw new GenericError('Unable to delete file', ERROR_CONFIG.GENERIC_ERROR, true);

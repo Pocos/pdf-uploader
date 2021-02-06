@@ -44,7 +44,6 @@ export class FileService {
   }
 
   public deleteFile(id: string) {
-    console.log(id);
     return this.http
       .delete(`http://localhost:3000/api/v1/file/${id}`, {});
   }
