@@ -3,7 +3,7 @@ To boot up the project you need to install docker compose binaries.
 Please refer to https://docs.docker.com/compose/install/
 
 To check that docker-compose binaries are fully installed and the environment is properly set run:
-```docker-compose -v````
+```docker-compose -v```
 
 To boot up the:
 - backend
